@@ -12,3 +12,4 @@ textblob
 Flask
 matplotlib
 git+https://github.com/JustAnotherArchivist/snscrape.git
+gunicorn

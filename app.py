@@ -1,6 +1,9 @@
 from flask import Flask, redirect, request,url_for, render_template
 from textblob import TextBlob
 from textblob import Word
+
+
+from gunicorn.app.wsgiapp import run
 import re
 from cypher_query import execute_query
 from flipkart_data import flipkart_data
@@ -84,6 +87,15 @@ def execute_sentiment_query(english_lower):
         return result_url
     else:
         return False
+    
+
+if __name__ == '__main__':
+    # Run the app using the Flask development server
+    app.run()
+
+# Add the following lines to run the app with Gunicorn
+if __name__ != '__main__':
+    run()
         
 
 
