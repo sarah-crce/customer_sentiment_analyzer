@@ -1,0 +1,12 @@
+cloudinary
+pandas
+torch
+scipy
+transformers
+requests
+chardet
+neo4j
+bs4
+tabulate
+textblob
+Flask

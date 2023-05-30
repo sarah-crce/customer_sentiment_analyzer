@@ -1,6 +1,6 @@
 import snscrape.modules.twitter as sntwitter
 import re
-from py2neo import Graph
+
 import urllib.parse
 import cloudinary
 from cloudinary.uploader import upload
