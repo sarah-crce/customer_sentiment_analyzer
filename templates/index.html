@@ -1,0 +1,42 @@
+<html>
+<head>
+<title> Customer Review Analysis </title>
+</head>
+<body>
+    <h1 style="text-align:center; padding: 30px;"> CUSTOMER SENTIMENT ANALYSIS </h1>
+    <center>
+        <form action="/scrape" method="post">
+            <label for="query" style="text-align:left; padding: 100px;"> Enter Query Below: </label>
+            <br><input type="text" id="query" name="query" style="text-align:center; margin: 20px; height: 3%; width:80%;">
+            <input type="submit" value="Submit">
+        </form>
+        <div id="scrape-info">
+            {% if image %}
+            <img src={{image}} alt="Bar Graph">
+           {% elif not image and not headers and not table_data %}
+           <h6>None </h6>
+            {% else  %}
+            <h1> Result Table </h1>
+            <table border="2">
+                <thead>
+                    <tr>
+                        {% for each_header in headers %}
+                        <th style="padding:10px; text-align:center">{{each_header}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for each_row in table_data %}
+                    <tr >
+                        {%for cell in each_row %}
+                        <td style="padding:10px; text-align:center">{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </center>
+</body>
+</html>
