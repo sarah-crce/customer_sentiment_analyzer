@@ -6,7 +6,7 @@ from Product_Fetch.code_reuse import create_df_product, csv_file_handling
 def tweet_scrape(product_type,query_portion, product_name):
    query = query_portion+" HPIndia -from:HPIndia -filter:replies -filter:links -filter:media -lang:hi"
    tweets = []
-   limit = 100
+   limit = 5
 
    for tweet in sntwitter.TwitterSearchScraper(query).get_items():
       if len(tweets) == limit:
