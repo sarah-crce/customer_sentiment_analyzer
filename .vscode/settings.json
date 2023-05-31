@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./Query Execution",
+        "./Product Fetch and Store"
+    ]
+}

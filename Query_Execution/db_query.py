@@ -1,32 +1,19 @@
-import base64
-import io
-from neo4j import GraphDatabase
-import chardet
-import os
-import csv
-import requests
 from tabulate import tabulate
 import matplotlib.pyplot as plt
 import cloudinary
+import os 
+from Query_Execution.db_connection import connection
 
 def execute_query(find, product):
 
-  uri = "neo4j+s://321eaff0.databases.neo4j.io"
-  username = "neo4j"
-  password = "Eob2hHw249f40DbLGgR1qx_TELhXg5S4g-1dnga_D7c"
-
-  # Cloudinary CSV URL
-  
-  flag = 0
-  # Connect to Neo4j Aura
-  driver = GraphDatabase.driver(uri, auth=(username, password))
+  driver = connection()
 
   # Parse CSV and import data into Neo4j
   with driver.session() as session:
     if(find=="problem"):
       cypher_query=f'''
-      MATCH (p:Product {{name: '{product}'}})-[:NEGATIVE]->(r:Review)
-        RETURN p.name AS Product, r.content AS Problem
+      MATCH (n:ProductName {{name: '{product}'}})-[:NEGATIVE]->(r:Review)
+        RETURN n.name AS Product, r.content AS Problem
       '''
       res = session.run(cypher_query)
       table_data = [(data["Product"], data["Problem"]) for data in res]
@@ -37,8 +24,8 @@ def execute_query(find, product):
 
     elif(find=="positive"):
       cypher_query=f'''
-      MATCH (p:Product {{name: '{product}'}})-[:POSITIVE]->(r:Review)
-        RETURN p.name AS Product, r.content AS Positive
+      MATCH (n:ProductName {{name: '{product}'}})-[:POSITIVE]->(r:Review)
+        RETURN n.name AS Product, r.content AS Positive
       '''
       res = session.run(cypher_query)
 
@@ -96,8 +83,8 @@ def execute_query(find, product):
         
     else:
       cypher_query=f'''
-      MATCH (p:Product {{name: '{product}'}})-[:NEUTRAL]->(r:Review)
-        RETURN p.name AS Product, r.content AS Neutral
+      MATCH (n:ProductName {{name: '{product}'}})-[:NEUTRAL]->(r:Review)
+        RETURN n.name AS Product, r.content AS Neutral
       '''
       res =session.run(cypher_query)
 
@@ -113,5 +100,30 @@ def execute_query(find, product):
 
   print([table_data, headers])
   return([table_data, headers])
+
+
+def query_to_find(ptype,pname):
+  driver = connection()
+  with driver.session() as session:
+
+      cypher_query = f"""
+        MATCH (t:ProductType {{name: '{ptype}'}})-[:NAME]->(n:ProductName {{name: '{pname}'}})
+        RETURN EXISTS((t)-[:NAME]->(n)) AS hasRelation
+        """
+      result = session.run(cypher_query)
+      for record in result:
+          already_exists = record["hasRelation"]
+          if already_exists:
+              return True
+          else:
+              return False
+  driver.close()
+          
+# ans=query_to_find('printer','deskjet')
+# print(ans)
+
+
+
+
 
 

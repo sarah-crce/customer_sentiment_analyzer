@@ -1,20 +1,8 @@
-from neo4j import GraphDatabase
-import chardet
-import os
-import csv
 import requests
+from Query_Execution.db_connection import connection
 
 def graph_db(csv_url):
-
-  uri = "neo4j+s://321eaff0.databases.neo4j.io"
-  username = "neo4j"
-  password = "Eob2hHw249f40DbLGgR1qx_TELhXg5S4g-1dnga_D7c"
-
-  # Cloudinary CSV URL
-  
-
-  # Connect to Neo4j Aura
-  driver = GraphDatabase.driver(uri, auth=(username, password))
+  driver = connection()
 
   # Download CSV data from Cloudinary
   response = requests.get(csv_url)
@@ -25,38 +13,40 @@ def graph_db(csv_url):
 
       cypher_query = f"""
         LOAD CSV WITH HEADERS FROM '{csv_url}' AS row
-        MERGE (p:Product {{name: row.Product}})
+        MERGE (t:ProductType {{name: row.ProductType}})
+        MERGE (n:ProductName {{name: row.ProductName}})
         MERGE (r:Review {{content: row.Review}})
         MERGE (s:Sentiment {{name: row.Sentiments}})
 
         MERGE (r)-[:SENTIMENT]->(s)
+        MERGE (t)-[:NAME]->(n)
 
-        WITH p, r, s
+        WITH n, r, s
         WHERE s.name = "Negative"
-        MERGE (p)-[:NEGATIVE]->(r)
+        MERGE (n)-[:NEGATIVE]->(r)
         """
       cypher_query_positive= f"""
         LOAD CSV WITH HEADERS FROM '{csv_url}' AS row
-        MERGE (p:Product {{name: row.Product}})
+        MERGE (n:ProductName {{name: row.ProductName}})
         MERGE (r:Review {{content: row.Review}})
         MERGE (s:Sentiment {{name: row.Sentiments}})
 
 
-        WITH p, r, s
+        WITH n, r, s
         WHERE s.name = "Positive"
-        MERGE (p)-[:POSITIVE]->(r)
+        MERGE (n)-[:POSITIVE]->(r)
         """
 
       cypher_query_neutral=f"""
         LOAD CSV WITH HEADERS FROM '{csv_url}' AS row
-        MERGE (p:Product {{name: row.Product}})
+        MERGE (n:ProductName {{name: row.ProductName}})
         MERGE (r:Review {{content: row.Review}})
         MERGE (s:Sentiment {{name: row.Sentiments}})
 
 
-        WITH p, r, s
+        WITH n, r, s
         WHERE s.name = "Neutral"
-        MERGE (p)-[:NEUTRAL]->(r)
+        MERGE (n)-[:NEUTRAL]->(r)
         """
       session.run(cypher_query, csvContent=csv_content)
       session.run(cypher_query_positive, csvContent=csv_content)
@@ -64,4 +54,6 @@ def graph_db(csv_url):
 
   # Close the Neo4j driver
   driver.close()
+
+# graph_db('https://res.cloudinary.com/do7wdh1hr/raw/upload/v1685521484/op4theh0hb0bwo05e06z.csv')
 
