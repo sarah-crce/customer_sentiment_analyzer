@@ -11,7 +11,7 @@ import os
 def tweet_scrape(query_portion, product_name):
    query = query_portion+" HPIndia -from:HPIndia -filter:replies -filter:links -filter:media -lang:hi"
    tweets = []
-   limit = 100
+   limit = 10
 
    for tweet in sntwitter.TwitterSearchScraper(query).get_items():
       if len(tweets) == limit:
