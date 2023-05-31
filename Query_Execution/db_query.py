@@ -59,7 +59,7 @@ def execute_query(find, product):
       image=plt.savefig('graph.png')
       cwd = os.getcwd()
       print(cwd)
-      img_url = cwd+'\graph.png'
+      img_url = cwd+'/graph.png'
       print(img_url)
 
       cloudinary.config(
