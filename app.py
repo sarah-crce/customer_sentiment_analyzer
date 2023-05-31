@@ -34,9 +34,7 @@ def scrape():
         if(tw_data==False):
             tw_search = search_product[0][0]+search_brand[1]
             tw_data=twitter_data.tweet_scrape(tw_search, search_product[0][0])
-        fl_data = flipkart_data(search_brand[1],search_product[0][1])
-        if(fl_data==False):
-            fl_data = flipkart_data(search_brand[1],search_product[0][0])
+        
         
         sentiment_analysis()
         query_search= search_product[0][1] if tw_data else search_product[0][0]
